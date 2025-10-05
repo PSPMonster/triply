@@ -1,0 +1,179 @@
+/* 
+ * Hero Section - Dynamic Collapse
+ * 
+ * Inspired by iOS Safari's address bar behavior
+ * Smoothly shrinks from full height to 0px as user scrolls
+ * 
+ * Key features:
+ * - maxHeight animated via Framer Motion (JS-controlled)
+ * - Padding animated simultaneously for seamless collapse
+ * - overflow: hidden ensures clean crop
+ * - will-change hints for GPU optimization
+ */
+.hero {
+  position: relative;
+  padding: calc(64px + var(--space-xl)) var(--space-lg) var(--space-xl);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(249, 250, 251, 1) 50%,
+    rgba(243, 244, 246, 1) 100%
+  );
+  overflow: hidden;
+  will-change: transform, padding, max-height;
+  transition: padding 0.1s linear;
+}
+
+/* Subtle gradient overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at top,
+    rgba(147, 197, 253, 0.1) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.heroContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  will-change: transform, opacity;
+}
+
+/* Title Section */
+.title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-xs);
+  background: linear-gradient(135deg, #1d1d1f 0%, #4a5568 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+.tagline {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  font-weight: 400;
+  margin-bottom: var(--space-2xl);
+  line-height: 1.4;
+}
+
+/* Meta Info Cards */
+.metaInfo {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.metaCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: all var(--transition-smooth);
+  cursor: default;
+}
+
+.metaCard:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 122, 255, 0.2);
+}
+
+.metaIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--color-accent), #0066cc);
+  border-radius: 10px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.metaText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metaLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.metaValue {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero {
+    padding: calc(56px + var(--space-lg)) var(--space-md) var(--space-lg);
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .tagline {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-lg);
+  }
+
+  .metaInfo {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .metaCard {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .metaIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .metaValue {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Animation for smooth fade */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

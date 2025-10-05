@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Test - Triply</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1d1d1f;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            color: #007aff;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        video {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .info {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+        .status.success { background: #d1f4e0; color: #0a6638; }
+        .status.error { background: #fdd; color: #c00; }
+        .status.pending { background: #ffe; color: #960; }
+        #videoStats {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Video Background Test - Triply</h1>
+        
+        <!-- Test 1: Direct video element -->
+        <div class="test-section">
+            <h2>Test 1: Basic Video Element (No Styles)</h2>
+            <p class="info">Testing if video file loads and plays correctly</p>
+            <video id="video1" controls autoplay loop muted playsinline>
+                <source src="/assets/bg_video.mp4" type="video/mp4">
+                Your browser doesn't support video.
+            </video>
+            <div id="video1Status"></div>
+        </div>
+
+        <!-- Test 2: Video with LandingPage styles -->
+        <div class="test-section">
+            <h2>Test 2: Video with Production Styles</h2>
+            <p class="info">Testing with same styles as LandingPage (brightness, blur, overlay)</p>
+            <div style="position: relative; width: 100%; max-width: 800px; height: 450px; overflow: hidden; border-radius: 8px;">
+                <!-- Video Background -->
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden;">
+                    <video 
+                        id="video2"
+                        autoplay 
+                        loop 
+                        muted 
+                        playsinline
+                        preload="auto"
+                        style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            min-width: 100%;
+                            min-height: 100%;
+                            transform: translate(-50%, -50%);
+                            object-fit: cover;
+                            filter: brightness(1.3) blur(2px);
+                            opacity: 0;
+                            animation: fadeIn 2s ease-out 0.5s forwards;
+                        "
+                    >
+                        <source src="/assets/bg_video.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <!-- Overlay -->
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1;
+                    background: linear-gradient(
+                        180deg,
+                        rgba(255, 255, 255, 0.85) 0%,
+                        rgba(255, 255, 255, 0.75) 30%,
+                        rgba(255, 255, 255, 0.8) 70%,
+                        rgba(255, 255, 255, 0.9) 100%
+                    );
+                    backdrop-filter: blur(8px) saturate(120%);
+                    -webkit-backdrop-filter: blur(8px) saturate(120%);
+                "></div>
+                
+                <!-- Content -->
+                <div style="position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 20px;">
+                    <div>
+                        <h1 style="font-size: 48px; margin: 0; color: #1d1d1f;">Triply</h1>
+                        <p style="font-size: 20px; color: #666; margin: 10px 0;">Plan less. Travel more.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="video2Status"></div>
+        </div>
+
+        <!-- Test 3: Video Info -->
+        <div class="test-section">
+            <h2>Test 3: Video File Information</h2>
+            <div id="videoStats">Loading video stats...</div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+    </style>
+
+    <script>
+        // Test video loading and playback
+        function testVideo(videoId, statusId) {
+            const video = document.getElementById(videoId);
+            const statusDiv = document.getElementById(statusId);
+            
+            let statusHTML = '';
+
+            // Check if video can load
+            video.addEventListener('loadstart', () => {
+                statusHTML += '<span class="status pending">Loading...</span>';
+                statusDiv.innerHTML = statusHTML;
+            });
+
+            video.addEventListener('loadeddata', () => {
+                statusHTML += '<span class="status success">Video Loaded</span>';
+                statusDiv.innerHTML = statusHTML;
+            });
+
+            video.addEventListener('canplay', () => {
+                statusHTML += '<span class="status success">Can Play</span>';
+                statusDiv.innerHTML = statusHTML;
+                console.log(`${videoId} can play:`, {
+                    duration: video.duration,
+                    videoWidth: video.videoWidth,
+                    videoHeight: video.videoHeight,
+                    readyState: video.readyState
+                });
+            });
+
+            video.addEventListener('playing', () => {
+                statusHTML += '<span class="status success">Playing ✓</span>';
+                statusDiv.innerHTML = statusHTML;
+            });
+
+            video.addEventListener('error', (e) => {
+                statusHTML += '<span class="status error">Error: ' + e.message + '</span>';
+                statusDiv.innerHTML = statusHTML;
+                console.error(`${videoId} error:`, video.error);
+            });
+
+            video.addEventListener('stalled', () => {
+                statusHTML += '<span class="status error">Stalled</span>';
+                statusDiv.innerHTML = statusHTML;
+            });
+        }
+
+        // Initialize tests
+        testVideo('video1', 'video1Status');
+        testVideo('video2', 'video2Status');
+
+        // Fetch video file info
+        fetch('/assets/bg_video.mp4', { method: 'HEAD' })
+            .then(response => {
+                const stats = {
+                    'HTTP Status': response.status + ' ' + response.statusText,
+                    'Content-Type': response.headers.get('content-type'),
+                    'Content-Length': (parseInt(response.headers.get('content-length')) / 1024 / 1024).toFixed(2) + ' MB',
+                    'Cache-Control': response.headers.get('cache-control') || 'None',
+                    'ETag': response.headers.get('etag') || 'None',
+                    'Accept-Ranges': response.headers.get('accept-ranges') || 'None'
+                };
+
+                let html = '';
+                for (const [key, value] of Object.entries(stats)) {
+                    html += `<div><strong>${key}:</strong> ${value}</div>`;
+                }
+                document.getElementById('videoStats').innerHTML = html;
+            })
+            .catch(err => {
+                document.getElementById('videoStats').innerHTML = 
+                    '<span class="status error">Failed to fetch video info: ' + err.message + '</span>';
+            });
+
+        // Add console logging
+        console.log('%c🎬 Video Test Page Loaded', 'color: #007aff; font-size: 16px; font-weight: bold');
+        console.log('Testing video file: /assets/bg_video.mp4');
+    </script>
+</body>
+</html>

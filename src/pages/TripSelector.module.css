@@ -1,0 +1,957 @@
+.selector {
+  min-height: 100vh;
+  padding: var(--space-2xl) var(--space-lg);
+  background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Sticky Progress Indicator - Apple-like floating widget with optional steps */
+.stickyProgress {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 50px;
+  padding: 12px 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  min-width: 160px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stickyProgress.expanded {
+  padding: 16px 24px;
+  min-width: 280px;
+  box-shadow: 
+    0 12px 48px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 0 0 4px rgba(0, 122, 255, 0.1);
+  animation: expandPulse 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stickyProgressContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.stickyProgressSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.stickyProgressSteps {
+  display: flex;
+  gap: 6px;
+}
+
+.stickyProgressDivider {
+  width: 1px;
+  height: 20px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 0, 0, 0.1) 20%,
+    rgba(0, 0, 0, 0.1) 80%,
+    transparent
+  );
+  margin: 0 4px;
+}
+
+.stickyProgressDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stickyProgressDot.completed {
+  background: linear-gradient(135deg, var(--color-accent), #00d4ff);
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+  transform: scale(1.1);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+.stickyProgressDot.optional {
+  background: #f3f4f6;
+  border: 1.5px solid #d1d5db;
+}
+
+.stickyProgressDot.optional.completed {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  border: none;
+}
+
+.stickyProgressText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.completedText {
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.optionalLabel {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.bonusText {
+  color: #10b981;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Motivational Tooltip */
+.motivationalTooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 
+    0 8px 24px rgba(102, 126, 234, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.motivationalTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 20px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #764ba2;
+}
+
+.tooltipIcon {
+  font-size: 14px;
+  animation: tooltipPulse 2s ease-in-out infinite;
+}
+
+.tooltipText {
+  letter-spacing: -0.01em;
+}
+
+/* Animations */
+@keyframes expandPulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.4);
+  }
+}
+
+@keyframes tooltipPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Search Section */
+.searchSection {
+  margin-bottom: var(--space-xl);
+}
+
+.searchContainer {
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto var(--space-md);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px var(--space-md);
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all var(--transition-smooth);
+  border: 1px solid transparent;
+}
+
+.searchBox.focused {
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.12);
+  border-color: rgba(0, 122, 255, 0.2);
+  border-radius: 16px; /* Square corners when dropdown open */
+}
+
+.searchBox.hasSelection {
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  border: 2px solid var(--color-accent);
+}
+
+.searchIcon {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: color var(--transition-smooth);
+}
+
+.searchBox.focused .searchIcon {
+  color: var(--color-accent);
+}
+
+.searchInput {
+  flex: 1;
+  font-size: 15px;
+  color: var(--color-text-primary);
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* Selected Location Display */
+.selectedLocationDisplay {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.selectedLocationName {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-accent);
+  flex: 1;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: rgba(0, 122, 255, 0.1);
+  border-radius: 50%;
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clearButton:hover {
+  background: rgba(0, 122, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.clearButton:active {
+  transform: scale(0.95);
+}
+
+.destinationGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+.destinationCard {
+  position: relative;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-smooth);
+  border: 3px solid transparent;
+}
+
+.destinationCard.selected {
+  border-color: var(--color-accent);
+  box-shadow: 0 12px 32px rgba(0, 122, 255, 0.2);
+}
+
+.destinationImage {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+}
+
+.destinationImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-smooth);
+}
+
+.destinationCard:hover .destinationImage img {
+  transform: scale(1.1);
+}
+
+.destinationOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-lg);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  color: white;
+}
+
+.destinationName {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+/* Mood Section */
+.moodSection {
+  margin-bottom: var(--space-2xl);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.moodGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-lg);
+}
+
+.moodCard {
+  padding: var(--space-xl);
+  background: white;
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  border: 2px solid transparent;
+  box-shadow: var(--shadow-sm);
+}
+
+.moodCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.moodCard.selectedMood {
+  border-color: var(--mood-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 0 0 3px var(--mood-color);
+  background: linear-gradient(135deg, white 0%, var(--mood-color) 0%, white 5%);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* 🌟 Pulsating glow - Apple-like selection feedback */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 
+                0 0 0 3px var(--mood-color),
+                0 0 20px rgba(0, 122, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 
+                0 0 0 4px var(--mood-color),
+                0 0 40px rgba(0, 122, 255, 0.5);
+  }
+}
+
+.moodIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto var(--space-md);
+  border-radius: var(--border-radius);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: all var(--transition-smooth);
+}
+
+.moodCard.selectedMood .moodIcon {
+  background: var(--mood-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.moodName {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.moodDescription {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* Configuration Sections (Group, Duration, Budget, Interests) */
+.configSection {
+  margin-bottom: var(--space-2xl);
+}
+
+.optional {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+/* Compact Grid (Group, Duration) */
+.compactGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-md);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.compactCard {
+  padding: var(--space-lg);
+  background: white;
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.compactCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 122, 255, 0.2);
+}
+
+.compactCard.selectedCompact {
+  border-color: var(--color-accent);
+  box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15);
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+}
+
+.compactEmoji {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: var(--space-sm);
+}
+
+.compactName {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--color-text-primary);
+}
+
+.compactDesc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* Custom Days Input */
+.customInput {
+  max-width: 400px;
+  margin: var(--space-lg) auto 0;
+  overflow: hidden;
+}
+
+.daysInput {
+  width: 100%;
+  padding: 14px var(--space-lg);
+  font-size: var(--font-size-base);
+  border: 2px solid #e5e7eb;
+  border-radius: 50px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+}
+
+.daysInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+/* Budget Grid */
+.budgetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.budgetCard {
+  padding: var(--space-xl);
+  background: white;
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.budgetCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 122, 255, 0.2);
+}
+
+.budgetCard.selectedBudget {
+  border-color: var(--color-accent);
+  box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15);
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+}
+
+.budgetEmoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: var(--space-sm);
+}
+
+.budgetName {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--color-text-primary);
+}
+
+.budgetRange {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: var(--space-xs);
+}
+
+.budgetDesc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* Interests Grid (Multi-select chips) */
+.interestsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.interestChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.interestChip:hover {
+  border-color: rgba(0, 122, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.interestChip.selectedChip {
+  border-color: var(--color-accent);
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.15);
+}
+
+.chipEmoji {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.chipName {
+  color: var(--color-text-primary);
+}
+
+/* Continue Button (for multi-select sections) */
+.continueButtonWrapper {
+  text-align: center;
+  margin-top: var(--space-lg);
+}
+
+.continueButton {
+  padding: 12px 32px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: white;
+  border: 2px solid var(--color-accent);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.continueButton:hover {
+  background: var(--color-accent);
+  color: white;
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.25);
+}
+
+/* Advanced Settings Toggle */
+.advancedToggleSection {
+  text-align: center;
+  margin: var(--space-2xl) 0 var(--space-lg);
+}
+
+.advancedToggleButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 14px 28px;
+  background: white;
+  border: 2px dashed #d1d5db;
+  border-radius: 50px;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.advancedToggleButton:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(0, 122, 255, 0.02);
+}
+
+.advancedToggleText {
+  font-weight: 600;
+}
+
+.advancedToggleIcon {
+  font-size: 12px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.advancedToggleHint {
+  margin-top: var(--space-xs);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+/* Advanced Settings Container */
+.advancedSettings {
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  border-radius: 24px;
+  padding: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+  border: 2px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.advancedSection {
+  margin-bottom: var(--space-2xl);
+}
+
+.advancedSection:last-child {
+  margin-bottom: 0;
+}
+
+.advancedTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+.chipsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.advancedChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.advancedChip:hover {
+  border-color: rgba(0, 122, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.advancedChip.selectedChip {
+  border-color: var(--color-accent);
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.15);
+}
+
+/* Dietary Details (expanded when "Custom" selected) */
+.dietaryDetailsContainer {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 2px dashed #e5e7eb;
+  overflow: hidden;
+}
+
+.dietaryDetailsLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+/* Action Section */
+.actionSection {
+  text-align: center;
+  margin-top: var(--space-2xl);
+}
+
+.planButton {
+  padding: 18px 56px;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--color-accent), #0066cc);
+  border-radius: 50px;
+  box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+  transition: all var(--transition-smooth);
+}
+
+.planButton.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #9ca3af;
+  box-shadow: none;
+}
+
+.planButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #9ca3af;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.planButton:not(:disabled):hover {
+  box-shadow: 0 12px 32px rgba(0, 122, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .selector {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: var(--font-size-base);
+  }
+
+  .destinationGrid,
+  .moodGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .destinationImage {
+    height: 200px;
+  }
+
+  .compactGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .compactEmoji {
+    font-size: 2rem;
+  }
+
+  .budgetGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .interestsGrid {
+    gap: 8px;
+  }
+
+  .interestChip {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .chipEmoji {
+    font-size: 1.2rem;
+  }
+
+  .advancedSettings {
+    padding: var(--space-lg);
+    border-radius: 16px;
+  }
+
+  .advancedToggleButton {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .advancedTitle {
+    font-size: var(--font-size-base);
+  }
+
+  .chipsContainer {
+    gap: 8px;
+  }
+
+  .advancedChip {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .stickyProgress {
+    bottom: var(--space-md);
+    right: var(--space-md);
+    left: var(--space-md);
+    min-width: auto;
+    padding: 10px 16px;
+  }
+
+  .stickyProgress.expanded {
+    padding: 12px 16px;
+    min-width: auto;
+  }
+
+  .stickyProgressContent {
+    align-items: center;
+  }
+
+  .stickyProgressSection {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stickyProgressDivider {
+    width: 40px;
+    height: 1px;
+    margin: 4px 0;
+  }
+
+  .stickyProgressDot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .stickyProgressText {
+    font-size: 11px;
+  }
+
+  .motivationalTooltip {
+    bottom: calc(100% + 8px);
+    font-size: 11px;
+    padding: 8px 12px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+
+  .motivationalTooltip::after {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+
+  .continueButton {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+
+  .planButton {
+    width: 100%;
+    padding: 16px 32px;
+    font-size: var(--font-size-base);
+    padding: 16px;
+  }
+}

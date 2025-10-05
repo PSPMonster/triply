@@ -1,0 +1,217 @@
+/* GlobalLoader - Apple-inspired loading animation */
+
+.loaderOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.loaderBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.loaderContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 48px 64px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-radius: 32px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  pointer-events: all;
+}
+
+/* Emoji bouncing animation container */
+.emojiContainer {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+
+.emoji {
+  font-size: 36px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  will-change: transform;
+}
+
+/* Loading message */
+.loaderMessage {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-align: center;
+  max-width: 300px;
+}
+
+/* Pulsing dots under message */
+.dotsContainer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #007aff, #00d4ff);
+  box-shadow: 0 0 8px rgba(0, 122, 255, 0.4);
+}
+
+/* Subtle spinning ring (Apple-style) */
+.spinnerRing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(0, 122, 255, 0.2);
+  border-right-color: rgba(0, 122, 255, 0.1);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .loaderBackdrop {
+    background: rgba(28, 28, 30, 0.85);
+  }
+
+  .loaderContent {
+    background: rgba(28, 28, 30, 0.95);
+    box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .loaderMessage {
+    color: #f5f5f7;
+  }
+
+  .dot {
+    background: linear-gradient(135deg, #0a84ff, #00d4ff);
+    box-shadow: 0 0 12px rgba(10, 132, 255, 0.6);
+  }
+
+  .spinnerRing {
+    border-top-color: rgba(10, 132, 255, 0.3);
+    border-right-color: rgba(10, 132, 255, 0.15);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .loaderContent {
+    padding: 32px 40px;
+    border-radius: 24px;
+    max-width: 90%;
+  }
+
+  .emojiContainer {
+    gap: 12px;
+  }
+
+  .emoji {
+    font-size: 28px;
+  }
+
+  .loaderMessage {
+    font-size: 15px;
+    max-width: 250px;
+  }
+
+  .spinnerRing {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* Reduced motion support (accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  .emoji {
+    animation: none;
+  }
+
+  .dot {
+    animation: none;
+    opacity: 1;
+  }
+
+  .spinnerRing {
+    animation: none;
+    display: none;
+  }
+}
+
+/* Animation variants for different loading states */
+.loaderContent[data-variant="planning"] {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.95) 0%,
+    rgba(118, 75, 162, 0.95) 100%
+  );
+}
+
+.loaderContent[data-variant="planning"] .loaderMessage {
+  color: white;
+}
+
+.loaderContent[data-variant="planning"] .dot {
+  background: white;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.loaderContent[data-variant="planning"] .spinnerRing {
+  border-top-color: rgba(255, 255, 255, 0.3);
+  border-right-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Hover effect on loader content (subtle) */
+.loaderContent:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pulse animation for special states */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+.loaderContent[data-pulsing="true"] {
+  animation: pulse 2s ease-in-out infinite;
+}

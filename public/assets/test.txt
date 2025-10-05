@@ -1,0 +1,10 @@
+✅ Static assets routing works!
+
+This file is served directly by Vite dev server, NOT by React Router.
+
+If you can see this, it means:
+- /public/assets/ folder is correctly configured
+- Vite serves static files from /public/ at root URL
+- React Router does not intercept /assets/* paths
+
+Next step: Add bg_video.mp4 and video-poster.jpg to this folder!

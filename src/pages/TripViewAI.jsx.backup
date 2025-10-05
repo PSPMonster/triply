@@ -1,0 +1,420 @@
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import {
+  MapPin,
+  Clock,
+  DollarSign,
+  Users,
+  Calendar,
+  Star,
+  Info,
+  Utensils,
+  Car,
+  Camera,
+  Heart,
+  AlertCircle,
+  Lightbulb,
+  Compass,
+  Hotel,
+  Coffee,
+} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Header } from "../components";
+import styles from "./TripView.module.css";
+
+/**
+ * TripViewAI - Display AI-generated trip itinerary
+ * Apple-like design with smooth animations and intuitive UX
+ *
+ * Shows:
+ * - Day-by-day itinerary with activities
+ * - Activity cards with time, cost, tips
+ * - Tips & recommendations (expandable)
+ * - Smooth scroll behavior with sticky tabs
+ */
+const TripViewAI = () => {
+  const { cityId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get trip data from navigation state
+  const { tripData, itinerary } = location.state || {};
+
+  const [selectedDay, setSelectedDay] = useState(0);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+  const [showTips, setShowTips] = useState(false);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+
+  const dayTabsRef = useRef(null);
+  const contentRef = useRef(null);
+  const [layoutSpacing, setLayoutSpacing] = useState({
+    stickySpacing: 160,
+    timelinePadding: 112,
+  });
+
+  // 📜 Track scroll position for dynamic spacing
+  const { scrollY } = useScroll();
+
+  // 🎨 Dynamic spacing - appears when scrolling
+  const heroCollapseProgress = useTransform(
+    scrollY,
+    [0, 120, 180],
+    [0, 0.5, 1]
+  );
+  const timelinePaddingTop = useTransform(heroCollapseProgress, (value) => {
+    const targetPadding = layoutSpacing.timelinePadding;
+    return `${targetPadding * value}px`;
+  });
+
+  // Redirect if no data
+  if (!tripData || !itinerary) {
+    return (
+      <motion.div
+        className={styles.notFound}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <AlertCircle size={48} style={{ marginBottom: '1rem' }} />
+        <h1>No trip data found</h1>
+        <p>Please start by creating a trip plan</p>
+        <button onClick={() => navigate("/explore")}>
+          Plan a Trip
+        </button>
+      </motion.div>
+    );
+  }
+
+  const { summary, days, tips, recommendations } = itinerary;
+  const currentDay = days[selectedDay];
+
+  // Get city name from trip data
+  const cityName = tripData.location?.display_name?.split(',')[0] || 
+                   tripData.location?.name || 
+                   'Your Destination';
+
+  // Activity type icons
+  const activityIcons = {
+    sightseeing: <Camera size={20} />,
+    food: <Utensils size={20} />,
+    activity: <Star size={20} />,
+    transport: <Car size={20} />,
+    rest: <Heart size={20} />,
+  };
+
+  // 📏 Calculate spacing for sticky elements
+  useEffect(() => {
+    const calculateSpacing = () => {
+      const headerEl = document.querySelector('[data-role="app-header"]');
+      const headerHeight = headerEl?.offsetHeight ?? 64;
+      const tabsHeight = dayTabsRef.current?.offsetHeight ?? 0;
+      const contentPaddingTop = contentRef.current
+        ? parseFloat(
+            window.getComputedStyle(contentRef.current).paddingTop || "0"
+          )
+        : 0;
+      const breathingSpace = window.innerWidth <= 768 ? 32 : 48;
+
+      const stickySpacing = headerHeight + tabsHeight + breathingSpace;
+      const timelinePadding = Math.max(stickySpacing - contentPaddingTop, 0);
+
+      setLayoutSpacing({ stickySpacing, timelinePadding });
+    };
+
+    calculateSpacing();
+    window.addEventListener("resize", calculateSpacing);
+    return () => window.removeEventListener("resize", calculateSpacing);
+  }, []);
+
+  // 🎯 Smooth scroll when day changes
+  useEffect(() => {
+    if (selectedDay === 0) return;
+
+    const firstActivity = document.querySelector(".activityCard");
+    if (firstActivity) {
+      setTimeout(() => {
+        firstActivity.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 200);
+    }
+  }, [selectedDay]);
+
+  return (
+    <motion.div
+      className={styles.tripView}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Universal Header - shows city name on scroll */}
+      <Header
+        onBack={() => navigate("/explore")}
+        title={cityName}
+        subtitle={summary?.description || tripData.location?.display_name}
+        transparent={true}
+      />
+
+      {/* Content Tabs */}
+      <div className={styles.tabs}>
+        <button
+          className={`${styles.tab} ${
+            activeTab === "itinerary" ? styles.active : ""
+          }`}
+          onClick={() => setActiveTab("itinerary")}
+        >
+          📅 Itinerary
+        </button>
+        <button
+          className={`${styles.tab} ${
+            activeTab === "tips" ? styles.active : ""
+          }`}
+          onClick={() => setActiveTab("tips")}
+        >
+          💡 Tips
+        </button>
+        <button
+          className={`${styles.tab} ${
+            activeTab === "recommendations" ? styles.active : ""
+          }`}
+          onClick={() => setActiveTab("recommendations")}
+        >
+          ⭐ Recommendations
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      <div className={styles.content}>
+        {/* Itinerary Tab */}
+        {activeTab === "itinerary" && (
+          <div className={styles.itinerarySection}>
+            {/* Day Selector */}
+            <div className={styles.daySelector}>
+              {days.map((day, index) => (
+                <motion.button
+                  key={day.day}
+                  className={`${styles.dayButton} ${
+                    selectedDay === index ? styles.active : ""
+                  }`}
+                  onClick={() => setSelectedDay(index)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className={styles.dayNumber}>Day {day.day}</span>
+                  <span className={styles.dayTitle}>{day.title}</span>
+                </motion.button>
+              ))}
+            </div>
+
+            {/* Day Details */}
+            {currentDay && (
+              <motion.div
+                className={styles.dayDetails}
+                key={selectedDay}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+              >
+                <div className={styles.dayHeader}>
+                  <h2>
+                    Day {currentDay.day}: {currentDay.title}
+                  </h2>
+                  {currentDay.theme && (
+                    <span className={styles.dayTheme}>{currentDay.theme}</span>
+                  )}
+                </div>
+
+                {/* Activities Timeline */}
+                <div className={styles.timeline}>
+                  {currentDay.activities.map((activity, index) => (
+                    <motion.div
+                      key={index}
+                      className={styles.activityCard}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ y: -5 }}
+                    >
+                      <div className={styles.activityTime}>
+                        <Clock size={16} />
+                        {activity.time}
+                      </div>
+
+                      <div className={styles.activityContent}>
+                        <div className={styles.activityHeader}>
+                          <div className={styles.activityIcon}>
+                            {activityIcons[activity.type] || <Star size={20} />}
+                          </div>
+                          <div>
+                            <h3 className={styles.activityTitle}>
+                              {activity.title}
+                            </h3>
+                            <div className={styles.activityMeta}>
+                              <span className={styles.duration}>
+                                {activity.duration}
+                              </span>
+                              <span className={styles.cost}>
+                                {activity.cost}
+                              </span>
+                              {activity.location && (
+                                <span className={styles.location}>
+                                  <MapPin size={12} />
+                                  {activity.location}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <p className={styles.activityDescription}>
+                          {activity.description}
+                        </p>
+
+                        {activity.tips && activity.tips.length > 0 && (
+                          <div className={styles.activityTips}>
+                            <Info size={14} />
+                            <ul>
+                              {activity.tips.map((tip, tipIndex) => (
+                                <li key={tipIndex}>{tip}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </div>
+        )}
+
+        {/* Tips Tab */}
+        {activeTab === "tips" && tips && (
+          <motion.div
+            className={styles.tipsSection}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {Object.entries(tips).map(([category, tipList], index) => (
+              <motion.div
+                key={category}
+                className={styles.tipCategory}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+                <ul>
+                  {tipList.map((tip, tipIndex) => (
+                    <li key={tipIndex}>{tip}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Recommendations Tab */}
+        {activeTab === "recommendations" && recommendations && (
+          <motion.div
+            className={styles.recommendationsSection}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {/* Restaurants */}
+            {recommendations.restaurants &&
+              recommendations.restaurants.length > 0 && (
+                <div className={styles.recCategory}>
+                  <h3>🍽️ Recommended Restaurants</h3>
+                  <div className={styles.recGrid}>
+                    {recommendations.restaurants.map((restaurant, index) => (
+                      <motion.div
+                        key={index}
+                        className={styles.recCard}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ y: -5 }}
+                      >
+                        <h4>{restaurant.name}</h4>
+                        <p className={styles.cuisine}>{restaurant.cuisine}</p>
+                        <p className={styles.priceRange}>
+                          {restaurant.priceRange}
+                        </p>
+                        {restaurant.mustTry && (
+                          <p className={styles.mustTry}>
+                            Must try: {restaurant.mustTry}
+                          </p>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            {/* Accommodations */}
+            {recommendations.accommodations &&
+              recommendations.accommodations.length > 0 && (
+                <div className={styles.recCategory}>
+                  <h3>🏨 Recommended Accommodations</h3>
+                  <div className={styles.recGrid}>
+                    {recommendations.accommodations.map((place, index) => (
+                      <motion.div
+                        key={index}
+                        className={styles.recCard}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ y: -5 }}
+                      >
+                        <h4>{place.name}</h4>
+                        <p className={styles.type}>{place.type}</p>
+                        <p className={styles.area}>📍 {place.area}</p>
+                        <p className={styles.priceRange}>{place.priceRange}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            {/* Local Experiences */}
+            {recommendations.localExperiences &&
+              recommendations.localExperiences.length > 0 && (
+                <div className={styles.recCategory}>
+                  <h3>✨ Local Experiences</h3>
+                  <div className={styles.recGrid}>
+                    {recommendations.localExperiences.map(
+                      (experience, index) => (
+                        <motion.div
+                          key={index}
+                          className={styles.recCard}
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          whileHover={{ y: -5 }}
+                        >
+                          <h4>{experience.name}</h4>
+                          <p className={styles.description}>
+                            {experience.description}
+                          </p>
+                          {experience.duration && (
+                            <p className={styles.duration}>
+                              <Clock size={14} />
+                              {experience.duration}
+                            </p>
+                          )}
+                        </motion.div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TripView;
