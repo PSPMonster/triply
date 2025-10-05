@@ -115,8 +115,29 @@ const TripViewAI = () => {
     );
   }
 
-  const { summary, days, tips, recommendations } = itinerary;
-  const currentDay = days[selectedDay];
+  // Safe destructuring with fallbacks
+  const summary = itinerary?.summary || { description: '', highlights: [] };
+  const days = itinerary?.days || [];
+  const tips = itinerary?.tips || {};
+  const recommendations = itinerary?.recommendations || {};
+  
+  // Guard: if no days, show error
+  if (days.length === 0) {
+    return (
+      <motion.div
+        className={styles.notFound}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <AlertCircle size={48} />
+        <h1>No itinerary generated</h1>
+        <p>AI couldn't generate an itinerary. Please try again.</p>
+        <button onClick={() => navigate("/explore")}>Try Again</button>
+      </motion.div>
+    );
+  }
+  
+  const currentDay = days[selectedDay] || { activities: [], theme: '', day: selectedDay + 1 };
 
   // Get city name properly from trip data
   const cityName =
@@ -133,21 +154,21 @@ const TripViewAI = () => {
     rest: <Heart size={20} />,
   };
 
-  // Prepare trip data for TripHero
+  // Prepare trip data for TripHero with safe fallbacks
   const tripForHero = {
-    id: cityId,
-    name: cityName,
+    id: cityId || 'unknown',
+    name: cityName || 'Your Destination',
     country:
-      tripData.location?.address?.country ||
-      tripData.location?.display_name?.split(",").pop()?.trim() ||
+      tripData?.location?.address?.country ||
+      tripData?.location?.display_name?.split(",").pop()?.trim() ||
       "",
-    description: summary.description,
+    description: summary?.description || 'An unforgettable journey awaits you.',
     image: `https://source.unsplash.com/1600x900/?${encodeURIComponent(
-      cityName
+      cityName || 'travel'
     )},travel`,
-    highlights: summary.highlights || [],
-    days: days.length,
-    activities: days.reduce((sum, day) => sum + day.activities.length, 0),
+    highlights: summary?.highlights || [],
+    days: days?.length || 0,
+    activities: days?.reduce((sum, day) => sum + (day?.activities?.length || 0), 0) || 0,
   };
 
   return (
@@ -172,7 +193,7 @@ const TripViewAI = () => {
       >
         {days.map((day, index) => (
           <motion.button
-            key={day.day}
+            key={day?.day || index}
             className={`${styles.dayTab} ${
               selectedDay === index ? styles.active : ""
             }`}
@@ -180,8 +201,8 @@ const TripViewAI = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className={styles.dayNumber}>Day {day.day}</span>
-            <span className={styles.dayTheme}>{day.theme}</span>
+            <span className={styles.dayNumber}>Day {day?.day || index + 1}</span>
+            <span className={styles.dayTheme}>{day?.theme || 'Explore'}</span>
           </motion.button>
         ))}
       </motion.div>
@@ -198,7 +219,7 @@ const TripViewAI = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          {currentDay.activities.map((activity, index) => (
+          {(currentDay.activities || []).map((activity, index) => (
             <motion.div
               key={index}
               className={`${styles.activityCard} activityCard`}
@@ -252,9 +273,11 @@ const TripViewAI = () => {
                 </div>
 
                 {/* Description */}
-                <p className={styles.activityDescription}>
-                  {activity.description}
-                </p>
+                {activity.description && (
+                  <p className={styles.activityDescription}>
+                    {activity.description}
+                  </p>
+                )}
 
                 {/* Tips (expandable) */}
                 {activity.tips && activity.tips.length > 0 && (
